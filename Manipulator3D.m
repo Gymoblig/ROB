@@ -5,17 +5,15 @@ L1 = 10;
 L2 = 1;
 L3 = 1;
 L4 = 1;
-L5 = 40;
+L5 = 10;
 L6 = 1;
 
 fi1= 0;
-fi2= 90;
-fi3= -180;
-%% pomocný prevod uhlov
+fi2= 45;
+fi3= -45;
 fi3 = fi3+90;
 
 
-%% Zápis matíc podľa definície, ktorá bola na cvičeniach
 Tx_L1 = [
         1 0 0 -L1;
         0 1 0 0;
@@ -56,7 +54,6 @@ Ry2 = [cosd(fi2) 0 sind(fi2) 0; 0 1 0 0; -sind(fi2) 0 cosd(fi2) 0; 0 0 0 1];
 Ry3 = [cosd(fi3) 0 sind(fi3) 0; 0 1 0 0; -sind(fi3) 0 cosd(fi3) 0; 0 0 0 1];
 
 
-% Vyjadrenie vektorov pre výpočet a,b,c
 p1_vekt = [-L2  0   0   1]';
 p2_vekt = [0    0   L4  1]';
 
@@ -78,7 +75,6 @@ c_vekt = A *B * C;
 
 
 
-
 filename = 'data/XYpoints.txt';
 filename2 = 'data/XZpoints.txt';
 
@@ -94,8 +90,8 @@ if isfile(filename) && isfile(filename2)
     y2_points = data2(:, 2);
     z2_points = data2(:, 3);
     disp('Dáta načítané zo súboru.');
+
 else
-    % Súbor neexistuje → vykonať výpočet a uložiť dáta
     fileID = fopen(filename, 'w');  
     fileID2 = fopen(filename2, 'a+');
 
@@ -106,7 +102,6 @@ else
     x2_points = [];
     y2_points = [];
     z2_points = [];
-
     for i = 0: 10: 360
         for j = 0 : 30 : 90
             k=0;
@@ -253,9 +248,7 @@ else
     disp('Dáta vypočítané a uložené.');
 end
 
-
-%% Vykreslenie pracovných priestorov
-%YZ
+%XY
 figure(2);clf;
 grid on;
 hold on;
@@ -267,10 +260,7 @@ plot([zaciatok(1,4), a_vekt(1)], [zaciatok(2,4), a_vekt(2)], 'y', 'LineWidth', 3
 plot([a_vekt(1), b_vekt(1)], [a_vekt(2), b_vekt(2)], 'y', 'LineWidth', 3);
 plot([b_vekt(1), c_vekt(1)], [b_vekt(2), c_vekt(2)], 'y', 'LineWidth', 3);
 
-
-
-
-   
+%XZ
 figure(3);clf;
 grid on;
 hold on;
@@ -284,7 +274,6 @@ plot([a_vekt(1), b_vekt(1)], [a_vekt(3), b_vekt(3)], 'y', 'LineWidth', 3);
 plot([b_vekt(1), c_vekt(1)], [b_vekt(3), c_vekt(3)], 'y', 'LineWidth', 3);
 
 
-
 figure(1); clf;
 hold on;
 markerSize = 25; 
@@ -293,6 +282,7 @@ markerColor = 'k';
 origin = [0, 0, 0];  
 scale = 3;  % dĺžka každej osi
 
+% Zobrazenie označenia súradnicového systému
 % Os X (červená)
 quiver3(origin(1), origin(2), origin(3), scale, 0, 0, 'r', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 % Os Y (zelená)
@@ -315,8 +305,8 @@ plot3([zaciatok(1,4), a_vekt(1)], [zaciatok(2,4), a_vekt(2)], [zaciatok(3,4), a_
 plot3([a_vekt(1), b_vekt(1)], [a_vekt(2), b_vekt(2)], [a_vekt(3), b_vekt(3)], 'y', 'LineWidth', 3);
 plot3([b_vekt(1), c_vekt(1)], [b_vekt(2), c_vekt(2)], [b_vekt(3), c_vekt(3)], 'y', 'LineWidth', 3);
 
-% Vykreslenie
-%% PRE A
+
+% PRE A
 scatter3(a_vekt(1), a_vekt(2), a_vekt(3), markerSize, markerColor, 'filled');
 origin = [zaciatok(1,4), zaciatok(2,4), zaciatok(3,4)];  
 % ošetrenie rotácie
@@ -332,7 +322,7 @@ quiver3(origin(1), origin(2), origin(3), rotX(1), rotX(2), rotX(3), 'r', 'LineWi
 quiver3(origin(1), origin(2), origin(3), rotY(1), rotY(2), rotY(3), 'g', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 quiver3(origin(1), origin(2), origin(3), rotZ(1), rotZ(2), rotZ(3), 'b', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 
-%% PRE B
+% PRE B
 scatter3(b_vekt(1), b_vekt(2), b_vekt(3), markerSize, markerColor, 'filled');
 origin = [a_vekt(1),a_vekt(2), a_vekt(3)];  
 % ošetrenie rotácie
@@ -348,7 +338,7 @@ quiver3(origin(1), origin(2), origin(3), rotX(1), rotX(2), rotX(3), 'r', 'LineWi
 quiver3(origin(1), origin(2), origin(3), rotY(1), rotY(2), rotY(3), 'g', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 quiver3(origin(1), origin(2), origin(3), rotZ(1), rotZ(2), rotZ(3), 'b', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 
-%% PRE C
+% PRE C
 scatter3(c_vekt(1), c_vekt(2), c_vekt(3), markerSize, markerColor, 'filled');
 origin = [b_vekt(1),b_vekt(2), b_vekt(3)];  
 % ošetrenie rotácie
@@ -366,9 +356,7 @@ hY=quiver3(origin(1), origin(2), origin(3), rotY(1), rotY(2), rotY(3), 'g', 'Lin
 quiver3(origin(1), origin(2), origin(3), rotZ(1), rotZ(2), rotZ(3), 'b', 'LineWidth', 2, 'MaxHeadSize', 0.5);
 
 fill3(y2_points(f), zeros(size(y2_points(f))), z2_points(f), 'm', 'FaceAlpha', 0.2);
-
-
-
+fill3(x_points(e), y_points(e), zeros(size(y2_points(e))), 'b', 'FaceAlpha', 0.2);
 
 view(3);
 hold off;
