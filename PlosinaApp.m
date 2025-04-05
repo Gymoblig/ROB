@@ -96,8 +96,6 @@ classdef PlosinaApp < matlab.apps.AppBase
             L4 = 1;
             L6 = 1;
 
-            fi3 = fi3+90;
-
             Tx_L1 = [
                     1 0 0 -L1;
                     0 1 0 0;
@@ -139,7 +137,7 @@ classdef PlosinaApp < matlab.apps.AppBase
 
             p1_plus_p2 = [-L2 0 L4 1]';
             p3_vekt = [0    0   L5   1]';
-            p4_vekt = [0    0   L6  1]';
+            p4_vekt = [L6    0   0  1]';
 
             A = Tx_L1* Tz_L3*Rz*Tx_L2*Tz_L4;
             B = Ry2* Tz_L5;
