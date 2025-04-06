@@ -5,7 +5,7 @@ L1 = 10;
 L2 = 1;
 L3 = 1;
 L4 = 1;
-L5 = 40;
+L5 = 10;
 L6 = 1;
 
 fi1= 0;
@@ -345,7 +345,7 @@ origin = [b_vekt(1),b_vekt(2), b_vekt(3)];
 vecX = [scale; 0; 0; 0];
 vecY = [0; scale; 0; 0];
 vecZ = [0; 0; scale; 0];
-
+Ry3 = [cosd(fi3+90) 0 sind(fi3+90) 0; 0 1 0 0; -sind(fi3+90) 0 cosd(fi3+90) 0; 0 0 0 1];
 rotX = Ry3 * vecX;
 rotY = Ry3 * vecY;
 rotZ = Ry3 * vecZ;
