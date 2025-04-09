@@ -139,9 +139,8 @@ Projekt demonštruje praktické využitie transformačných matíc pri simuláci
 
 ---
 
-## 💪 ČeSTNÉ PREHLÁSENIE
+## 💪 ČESTNÉ PREHLÁSENIE
 
 Zadanie som vypracoval sám. ČeSTNE prehlasujem, že som ho neskopíroval a nikomu inému neposkytol.
 
 _Nech mi je Isaac Asimov svedkom._
-```
