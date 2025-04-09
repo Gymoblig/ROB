@@ -5,7 +5,7 @@ L1 = 10;
 L2 = 1;
 L3 = 1;
 L4 = 1;
-L5 = 10;
+L5 = 40;
 L6 = 1;
 
 fi1= 0;
@@ -135,8 +135,8 @@ else
     i=0;
     for j = 0 : 1 : 90
         if (j == 0 || j == 90)
-            for k = -90 : 1 : 90
-                for l = 10: 1 : 40
+            for k = -180:1:0
+                for l = 10: 0.5 : 40
                     Rz = [sind(i) -cosd(i) 0 0; cosd(i) sind(i) 0 0; 0 0 1 0; 0 0 0 1];
                     Ry2 = [cosd(j) 0 sind(j) 0; 0 1 0 0; -sind(j) 0 cosd(j) 0; 0 0 0 1];
                     Ry3 = [cosd(k) 0 sind(k) 0; 0 1 0 0; -sind(k) 0 cosd(k) 0; 0 0 0 1];
@@ -162,7 +162,7 @@ else
                 end
             end
         else
-            k = 0;
+            k = -90;
             for l = 9: 0.5 : 40
                 Rz = [sind(i) -cosd(i) 0 0; cosd(i) sind(i) 0 0; 0 0 1 0; 0 0 0 1];
                 Ry2 = [cosd(j) 0 sind(j) 0; 0 1 0 0; -sind(j) 0 cosd(j) 0; 0 0 0 1];
@@ -183,61 +183,6 @@ else
 
                 % Okamžitý zápis do súboru
                 fprintf(fileID2, '%f %f %f\n', P_XZ(1), P_XZ(2), P_XZ(3));
-            end
-        end
-    end
-
-    for j = 270 : 1 : 360
-        if (j == 270 || j == 360)
-            % Loop for k when j is 270 or 360
-            for k = -90 : 1 : 90
-                for l = 10: 1 : 40
-                    Rz = [sind(i) -cosd(i) 0 0; cosd(i) sind(i) 0 0; 0 0 1 0; 0 0 0 1];
-                    Ry2 = [cosd(j) 0 sind(j) 0; 0 1 0 0; -sind(j) 0 cosd(j) 0; 0 0 0 1];
-                    Ry3 = [cosd(k) 0 sind(k) 0; 0 1 0 0; -sind(k) 0 cosd(k) 0; 0 0 0 1];
-
-                    % pomocne vypocty
-                    Tz_L5 = [1 0 0 0; 
-                             0 1 0 0; 
-                             0 0 1 l; 
-                             0 0 0 1]; 
-                    A = Tx_L1 * Tz_L3 * Rz * Tx_L2 * Tz_L4;
-                    B = Tx_L1 * Ry2 * Tz_L5;
-                    C = Ry3 * p4_vekt;
-
-                    P_XZ = A * B * C;
-
-                    % Uloženie bodov
-                    x2_points = [x2_points; P_XZ(1)];
-                    y2_points = [y2_points; P_XZ(2) + 2];  % Pridaný posun v osi Y
-                    z2_points = [z2_points; P_XZ(3)];
-
-                    % Okamžitý zápis do súboru
-                    fprintf(fileID2, '%f %f %f\n', P_XZ(1), P_XZ(2)+2, P_XZ(3));
-                end
-            end
-        else
-            k = 0;
-            for l = 9: 0.5 : 40
-                Rz = [sind(i) -cosd(i) 0 0; cosd(i) sind(i) 0 0; 0 0 1 0; 0 0 0 1];
-                Ry2 = [cosd(j) 0 sind(j) 0; 0 1 0 0; -sind(j) 0 cosd(j) 0; 0 0 0 1];
-                Ry3 = [cosd(k) 0 sind(k) 0; 0 1 0 0; -sind(k) 0 cosd(k) 0; 0 0 0 1];
-
-                % pomocne vypocty
-                Tz_L5 = [1 0 0 0; 0 1 0 0; 0 0 1 l; 0 0 0 1]; 
-                A = Tx_L1 * Tz_L3 * Rz * Tx_L2 * Tz_L4;
-                B = Tx_L1 * Ry2 * Tz_L5;
-                C = Ry3 * p4_vekt;
-
-                P_XZ = A * B * C;
-
-                % Uloženie bodov
-                x2_points = [x2_points; P_XZ(1)];
-                y2_points = [y2_points; P_XZ(2)+2];  % Pridaný posun v osi Y
-                z2_points = [z2_points; P_XZ(3)];
-
-                % Okamžitý zápis do súboru
-                fprintf(fileID2, '%f %f %f\n', P_XZ(1), P_XZ(2)+2, P_XZ(3));
             end
         end
     end
@@ -264,7 +209,7 @@ plot([b_vekt(1), c_vekt(1)], [b_vekt(2), c_vekt(2)], 'y', 'LineWidth', 3);
 figure(3);clf;
 grid on;
 hold on;
-f = boundary(y2_points, z2_points, 1);
+f = boundary(y2_points, z2_points, 0.1);
 
 plot(y2_points(f), z2_points(f), 'm-', 'LineWidth', 2);
 fill(y2_points(f), z2_points(f), 'm', 'FaceAlpha', 0.2); 
@@ -345,7 +290,8 @@ origin = [b_vekt(1),b_vekt(2), b_vekt(3)];
 vecX = [scale; 0; 0; 0];
 vecY = [0; scale; 0; 0];
 vecZ = [0; 0; scale; 0];
-Ry3 = [cosd(fi3+90) 0 sind(fi3+90) 0; 0 1 0 0; -sind(fi3+90) 0 cosd(fi3+90) 0; 0 0 0 1];
+fi3 = fi3+90;
+Ry3 = [cosd(fi3) 0 sind(fi3) 0; 0 1 0 0; -sind(fi3) 0 cosd(fi3) 0; 0 0 0 1];
 rotX = Ry3 * vecX;
 rotY = Ry3 * vecY;
 rotZ = Ry3 * vecZ;
@@ -360,4 +306,3 @@ fill3(x_points(e), y_points(e), zeros(size(y2_points(e))), 'b', 'FaceAlpha', 0.2
 
 view(3);
 hold off;
-
