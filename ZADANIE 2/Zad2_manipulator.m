@@ -52,3 +52,32 @@ title('Krútiace momenty manipulátora');
 legend('τ1', 'τ2');
 grid on;
 hold off;
+
+
+figure;
+plot(out.rychlost1.time, out.rychlost1.signals.values, 'LineWidth', 2);
+xlabel('Čas [s]');
+ylabel('Rýchlosť [rad/s]');
+title('Rýchlosť ramena q1');
+grid on;
+
+% Polohová odozva ramena q2
+figure;
+plot(out.rychlost2.time, out.rychlost2.signals.values, 'LineWidth', 2);
+xlabel('Čas [s]');
+ylabel('Rýchlosť [rad/s]');
+title('Rýchlosť ramena q2');
+grid on;
+
+
+% Spoločná polohová odozva ramien q1 a q2
+figure;
+hold on;
+plot(out.rychlost1.time, out.rychlost1.signals.values, 'LineWidth', 2);
+plot(out.rychlost2.time, out.rychlost2.signals.values, 'LineWidth', 2);
+xlabel('Čas [s]');
+ylabel('Rýchlosť [rad/s]');
+title('Rýchlosť ramien');
+legend('q1', 'q2');
+grid on;
+hold off;
