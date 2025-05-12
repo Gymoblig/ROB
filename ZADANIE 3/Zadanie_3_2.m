@@ -129,7 +129,7 @@ function Zadanie_3_2
                 plot(axSpeed, time_hist, V_CG_hist, 'g-', 'LineWidth', 2);   % Tažisko - zelená plná čiara
                 plot(axSpeed, time_hist, V_L_hist, 'r--', 'LineWidth', 2);   % Ľavé koleso - červená prerušovaná
                 plot(axSpeed, time_hist, V_R_hist, 'b:', 'LineWidth', 2);   % Pravé koleso - modrá čiara s bodkami
-                legend(axSpeed, 'V_L', 'V_R', 'V_{CG}');
+                legend(axSpeed, 'V_{CG} - ťažisko', 'V_L - Ľavé', 'V_R - Pravé');
                 grid(axSpeed, 'on');
                 hold(axSpeed, 'off');
 
