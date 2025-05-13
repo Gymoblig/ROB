@@ -16,12 +16,12 @@ function Zadanie_3_4
         'FontSize', 12);
 
     uicontrol('Style', 'pushbutton', 'String', 'Ukončiť a vykresliť rýchlosti', ...
-        'Position', [75 380 150 30], ...
+        'Position', [50 380 200 30], ...
         'Callback', @closeFigure, ...
         'FontSize', 10);
 
     % --- Layout klávesnice ---
-    keys = {'q', 'w', 'e'; 'a','s', 'd'; '', '', ''; '', 'space', ''};
+    keys = {'q', 'w', 'e'; 'a','s', 'd'; '', 'space', ''};
     keyPos = [60 120];  % Ľavý dolný roh
     keySize = [50 50];
     spacing = 10;
@@ -50,11 +50,12 @@ function Zadanie_3_4
             end
         end
     end
+    
 
     % --- Inicializácia premenných ---
     global V_L V_R traj_cg traj_L traj_R x y psi velkost_kroku b dt timerObj;
     V_L = 0; V_R = 0;
-    b = 2;
+    b = 0.2;
     dt = 0.01;
     x = 0; y = 0; psi = pi/2;
     velkost_kroku = 0.5;
@@ -75,7 +76,9 @@ function Zadanie_3_4
                 V_R = V_R - velkost_kroku;
             case 'a'
                 V_L = V_L - velkost_kroku;
+                V_R = V_R + velkost_kroku;
             case 'd'
+                V_L = V_L + velkost_kroku;
                 V_R = V_R - velkost_kroku;
             case 'e'
                 v = (V_L + V_R) / 2;
@@ -102,36 +105,92 @@ function Zadanie_3_4
 
     % --- Pohyb robota ---
     function moveRobot(~, ~)
-        v = (V_L + V_R) / 2;
-        omega = (V_R - V_L) / b;
+    v = (V_L + V_R) / 2;
+    omega = (V_R - V_L) / b;
 
-        x = x + v * cos(psi) * dt;
-        y = y + v * sin(psi) * dt;
-        psi = atan2(sin(psi + omega * dt), cos(psi + omega * dt));
+    x = x + v * cos(psi) * dt;
+    y = y + v * sin(psi) * dt;
+    psi = atan2(sin(psi + omega * dt), cos(psi + omega * dt));
 
-        traj_cg = [traj_cg; x, y];
-        traj_L = [traj_L; (x + b/2*sin(psi)), (y - b/2*cos(psi))];
-        traj_R = [traj_R; (x - b/2*sin(psi)), (y + b/2*cos(psi))];
+    traj_cg = [traj_cg; x, y];
+    traj_L = [traj_L; (x + b/2*sin(psi)), (y - b/2*cos(psi))];
+    traj_R = [traj_R; (x - b/2*sin(psi)), (y + b/2*cos(psi))];
 
-        V_L_hist = [V_L_hist; V_L];
-        V_R_hist = [V_R_hist; V_R];
-        V_CG_hist = [V_CG_hist; v];
-        time_hist = [time_hist; (length(time_hist) + 1) * dt];
+    V_L_hist = [V_L_hist; V_L];
+    V_R_hist = [V_R_hist; V_R];
+    V_CG_hist = [V_CG_hist; v];
+    time_hist = [time_hist; (length(time_hist) + 1) * dt];
 
-        axes(mainAxes);
-        cla;
-        hold on;
-        plot(traj_cg(:,1), traj_cg(:,2), 'g', 'LineWidth', 2);
-        plot(traj_L(:,1), traj_L(:,2), 'r--', 'LineWidth', 1);
-        plot(traj_R(:,1), traj_R(:,2), 'b--', 'LineWidth', 1);
-        plot(x, y, 'ko', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
-        axis equal;
-        grid on;
-        xlabel('X [m]');
-        ylabel('Y [m]');
-        hold off;
-        drawnow;
+    axes(mainAxes);
+    cla;
+    hold on;
+
+    % --- Trajektórie ---
+    plot(traj_cg(:,1), traj_cg(:,2), 'g', 'LineWidth', 2);
+    plot(traj_L(:,1), traj_L(:,2), 'r--', 'LineWidth', 1);
+    plot(traj_R(:,1), traj_R(:,2), 'b--', 'LineWidth', 1);
+
+    % --- Telo robota (podvozok) ---
+    robotLength = 2;  % m
+    robotWidth = b;   % m
+    corners = [
+        -robotLength/2, -robotWidth/2;
+        -robotLength/2,  robotWidth/2;
+         robotLength/2,  robotWidth/2;
+         robotLength/2, -robotWidth/2
+    ];
+    R = [cos(psi), -sin(psi); sin(psi), cos(psi)];
+    % --- Kolesá ---
+    wheelLength = 0.1;  % m
+    wheelWidth = 0.02;  % m
+    offset = 0.1;       % od stredu (ľavé a pravé koleso)
+
+    % Stredy kolies v lokálnom súradnom systéme
+    wheelCenters = [0,  offset;
+                    0, -offset];
+
+    % Farby pre kolesá
+    wheelColors = {[0.2 0.2 1], [1 0.2 0.2]};  % modré a červené
+    
+    for i = 1:2
+        cx = wheelCenters(i,1);
+        cy = wheelCenters(i,2);
+        wheel = [
+            -wheelLength/2, -wheelWidth/2;
+            -wheelLength/2,  wheelWidth/2;
+             wheelLength/2,  wheelWidth/2;
+             wheelLength/2, -wheelWidth/2
+        ];
+        wheel = wheel + [cx, cy];
+        wheelRotated = (R * wheel')';
+        wheelX = wheelRotated(:,1) + x;
+        wheelY = wheelRotated(:,2) + y;
+        fill(wheelX, wheelY, wheelColors{i});  % rôzne farby
     end
+
+    % --- Tyč spájajúca kolesá ---
+    % Vypočítame pozície stredov kolies v globálnych súradniciach
+    offsetVec = R * [0; offset];
+    leftWheelCenter = [x + offsetVec(1), y + offsetVec(2)];
+    offsetVec = R * [0; -offset];
+    rightWheelCenter = [x + offsetVec(1), y + offsetVec(2)];
+
+    % Spoj ich čiarou
+    plot([leftWheelCenter(1), rightWheelCenter(1)], ...
+         [leftWheelCenter(2), rightWheelCenter(2)], ...
+         'k-', 'LineWidth', 3);
+
+    % --- Ťažisko ---
+    plot(x, y, 'ko', 'MarkerFaceColor', 'g', 'MarkerSize', 8);
+
+    axis equal;
+    grid on;
+    xlabel('X [m]');
+    ylabel('Y [m]');
+    hold off;
+    drawnow;
+end
+
 
     % --- Aktualizácia tabuľky rýchlostí ---
     function updateTable()
@@ -170,7 +229,6 @@ function Zadanie_3_4
             legend('V_{CG} - ťažisko', 'V_L - Ľavé', 'V_R - Pravé');
             xlabel('Čas [s]');
             ylabel('Rýchlosť [m/s]');
-            ylim([-3 3]);
             grid on;
             title('Rýchlosti kolies a ťažiska');
             hold off;
