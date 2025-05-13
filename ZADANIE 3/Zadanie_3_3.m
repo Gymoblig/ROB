@@ -1,6 +1,6 @@
 function Zadanie_3_3
     % --- Vytvorenie hlavnej figury ---
-    fig = figure('Name', 'Robot Simulator', 'Position', [300, 300, 900, 600]);
+    fig = figure('Name', 'Zadanie 3.3', 'Position', [300, 300, 900, 600]);
 
     % --- Vstupné polia ---
     uicontrol('Style', 'text', 'Position', [30 500 100 20], 'String', 'Polomer R1 [m]');
