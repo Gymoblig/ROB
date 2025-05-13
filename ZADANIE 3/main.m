@@ -1,5 +1,5 @@
 function main
-    fig = figure('Name', 'Robot Simulator Menu', 'NumberTitle', 'off', 'Position', [100, 100, 1000, 600]);
+    fig = figure('Name', 'Mobilný kolesový robot', 'NumberTitle', 'off', 'Position', [100, 100, 1000, 600]);
     main_menu(fig); % Zavoláme funkciu main_menu, ktorá teraz berie fig ako parameter
 end
 
